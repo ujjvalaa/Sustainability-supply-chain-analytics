@@ -1,0 +1,43 @@
+m= folium.Map(
+location=[33.798259, -84.327062], zoom_ _start=4.4, tiles= Stamen Toner')
+#FastMarkerCluster (data[['latitudes*,
+longitudes']]. values. tolist)) .add_to(m)
+folium. LayerControl). add to (m)
+for row in data. iterrows):
+row=row[1]
+Folium. CircleMarker(location=(row["latitude"],
+row[ "longitude"]),
+color="#007849",
+fill=False). add_to (m)
+# save the map
+#m. save ("save_file. html")
+display (m)
+
+
+
+
+import random
+import numpy as np import pandas as pd import scipy.spatial
+from haversine import haversine def distance(p1,p2) :
+return haversine(p1[1:], p2[1:])
+def cluster_centroids (data, clusters, k):
+results=[]
+for i in range(k):
+results. append(np. average(data[clusters == i],weights=np.squeeze(np.asarray(data[clusters == i][=,[0]])),axis=0))
+return results
+def kmeans (data, k=None, centroids=None, steps=30):
+# Forgy initialization method: choose k data points randomly…
+centroids = data[np.random. choice(np. arange(len(data)), k, False)]
+elbow = []
+for _ in range(max (steps, 1)):
+sqdists = scipy. spatial.distance.cdist(centroids, data,
+lambda u, v: (distance(u,v)**2))
+elbow. append (sqdists)
+#sse=np. sum((np. mean(elbow)-elbow)**2)
+# Index of the closest centroid to each data point.
+clusters = np.argmin(sqdists, axis=0)
+new_centroids = cluster_centroids (data, clusters, k)
+if np.array_equal (new_centroids, centroids) :
+break
+centroids = new_centroids
+return clusters, centroids, elbow
